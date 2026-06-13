@@ -35,26 +35,6 @@
         "link": "https://github.com/devcjj/FOLIO"
     },
     {
-        "name": "Trial",
-        "category": "web",
-        "tag": "Web Development",
-        "description": "trial-1",
-        "chips": [
-            "TypeScript"
-        ],
-        "link": "https://github.com/devcjj/trial"
-    },
-    {
-        "name": "Trial 2",
-        "category": "code",
-        "tag": "Software Project",
-        "description": "trial-2",
-        "chips": [
-            "GitHub"
-        ],
-        "link": "https://github.com/devcjj/trial-2"
-    },
-    {
         "name": "Imposter Word",
         "category": "code",
         "tag": "C++ Development",
