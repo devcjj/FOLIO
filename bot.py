@@ -85,15 +85,25 @@ def send_email_alert(subject, body):
     if not sender or not password:
         raise ValueError("EMAIL_SENDER and EMAIL_PASSWORD environment variables must be set")
 
+    # Gmail app passwords are 16 chars; Google often displays them with spaces.
+    password = password.replace(" ", "")
+
     msg = MIMEText(body)
     msg["Subject"] = subject
     msg["From"] = sender
     msg["To"] = recipient
 
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
-        server.starttls()
-        server.login(sender, password)
-        server.sendmail(sender, recipient, msg.as_string())
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(sender, password)
+            server.sendmail(sender, recipient, msg.as_string())
+    except smtplib.SMTPAuthenticationError as e:
+        raise RuntimeError(
+            "Gmail login failed. Set EMAIL_PASSWORD to a Gmail App Password "
+            "(not your normal password). Enable 2-Step Verification, then create one at "
+            "https://myaccount.google.com/apppasswords — use the same Gmail address as EMAIL_SENDER."
+        ) from e
 
 
 def build_report(weather, reasons):
