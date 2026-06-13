@@ -1,0 +1,48 @@
+# The workflow name - appears in the GitHub Actions tab
+name: Pulse - Weather Alert Bot
+
+# When to run this workflow
+on:
+  # Scheduled run: 2:30 AM UTC = 8:00 AM IST
+  schedule:
+    - cron: '30 2 * * *'
+
+  # Manual trigger: adds a "Run workflow" button to the Actions tab.
+  # Use this to test anytime without waiting for the cron.
+  workflow_dispatch:
+
+# The jobs this workflow runs
+jobs:
+  run-pulse:                  # job name (your choice)
+    runs-on: ubuntu-latest    # use GitHub's free Ubuntu server
+
+    steps:
+      # Step 1: Get your code onto the server
+      - name: Checkout code
+        uses: actions/checkout@v4   # official action - clones your repo
+
+      # Step 2: Install Python 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install the requests library
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Step 4: Run your bot
+      - name: Run Pulse bot
+        run: python bot.py
+        env:
+          OPENWEATHERMAP_API_KEY: ${{ secrets.OPENWEATHERMAP_API_KEY }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
+
+      # Step 5: Save the output file so you can download it
+      - name: Upload summary as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-summary
+          path: daily_summary.txt
